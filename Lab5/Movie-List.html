@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Movie Tracker</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            .container {
+                max-width: 700px;   
+                margin: 40px auto;
+                background: #d19def;
+                border-radius: 16px;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+                padding: 32px 24px 24px 24px;
+            }
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(120deg, #f0f4f8 0%, rgb(140, 109, 157) 100%);
+                min-height: 100vh;
+                color: #333;
+            }
+            h1, h2 {
+                text-align: center;
+                color: #4f0453;
+                margin-bottom: 24px;
+                font-size: 2.5rem;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .form-group {
+                margin-bottom: 15px;
+            }
+            input[type="text"], select, input[type="number"] {
+                width: 100%;
+                padding: 8px;
+                box-sizing: border-box;
+            }
+            .add-btn {
+                padding: 10px 18px;
+                border: none;
+                border-radius: 6px;
+                font-size: 1rem;
+                cursor: pointer;
+                background-color: #4f0453;
+                color: #fff;
+                transition: background-color 0.2s;
+            }
+            .add-btn:hover {
+                background-color: #3a0246;
+            }
+            .remove-btn {
+                background-color: #dc3545;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                cursor: pointer;
+            }
+            .remove-btn:hover {
+                background-color: #c82333;
+            }
+            .movie-list ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            .movie-list li {
+                background-color: #f8f9fa;
+                margin-bottom: 10px;
+                padding: 10px;
+                border-radius: 5px;
+            }
+            p1{
+               color: #4f0453;
+                font: 1.2rem 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function MovieWatchList() {
+            const [movies, setMovies] = useState([]);
+            const [movieName, setMovieName] = useState('');
+            const [rating, setRating] = useState('');
+            const [review, setReview] = useState('');
+         
+
+            const options = ['amazing', 'good', 'Average', 'bad'];
+
+            const addMovie = (e) => {
+                e.preventDefault();
+                if (movieName.trim() === '' || rating.trim() === '' || review.trim() === '') {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                const newMovie = { name: movieName, rating, review };
+                setMovies([...movies, newMovie]);
+                setMovieName('');
+                setRating('');
+                setReview('');
+            };
+
+            const removeMovie = (index) => {
+                const updatedMovies = movies.filter((_, i) => i !== index);
+                setMovies(updatedMovies);
+            };
+
+            const getStars = (num) => {
+                return '⭐'.repeat(num);
+            };
+
+
+        return (
+            <div className="container">
+                <h1>Movie Watch List</h1>
+                <div>
+                    <p1>Movie Name:</p1>
+                    <form onSubmit={addMovie}>
+                        <div className="form-group">
+                    <input type="text" value={movieName} onChange={(e) => setMovieName(e.target.value)} placeholder="Enter movie name" />
+
+                    <div className="form-group">
+                                <label>Rating (1-5 stars):</label>
+                                <div className="rating-input">
+                                    <input 
+                                        type="number" 
+                                        min="1" 
+                                        max="5"
+                                        value={rating}
+                                        onChange={(e) => setRating(e.target.value)}
+                                        placeholder="1-5"
+                                    />
+                                    <span>{getStars(parseInt(rating))}</span>
+                                </div>
+                            </div>
+
+                    <p1>Review:</p1>
+                        <select value={review} onChange={(e) => setReview(e.target.value)}>
+                            {options.map((opt) => (
+                                <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                        </select>
+
+                    </div>
+                    <button type="submit" className="add-btn">Add Movie</button>
+                    </form>               
+                </div>
+
+                <div className="movie-list">
+                    <h2>My Watch List</h2>
+                    {movies.length === 0 ? (
+                        <p>No movies added yet.</p>
+                    ) : (
+                        <ul>
+                            {movies.map((movie, index) => (
+                                <li key={index}>
+                                    <strong>{movie.name}</strong> - Rating: {getStars(parseInt(movie.rating))} - Review: {movie.review} - <button onClick={() => removeMovie(index)} className="remove-btn">Remove</button>
+                                </li>
+                            ))}
+                        </ul>
+
+                    )}
+            </div>
+
+        </div>
+       )};
+
+    const root = document.getElementById('root');
+        ReactDOM.render(<MovieWatchList />, root);
+    </script>
+    </body>
+</html>
